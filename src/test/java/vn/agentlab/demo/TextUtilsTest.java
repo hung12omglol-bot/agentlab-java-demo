@@ -60,10 +60,22 @@ class TextUtilsTest {
     }
 
     @Test
-    void isPalindromeVietnameseDecision() {
+    void isPalindromeVietnameseNonPalindrome() {
         // "Đi đôi" -> các ký tự: đ, i, đ, ô, i -> ngược lại là i, ô, đ, i, đ -> false
         assertFalse(TextUtils.isPalindrome("Đi đôi"));
-        // Ký tự tiếng Việt đối xứng
+    }
+
+    @Test
+    void isPalindromeVietnamesePalindrome() {
+        // Ký tự tiếng Việt đối xứng sau khi chuẩn hóa chữ thường và bỏ dấu câu/khoảng trắng
         assertTrue(TextUtils.isPalindrome("Bà... à, B"));
+    }
+
+    @Test
+    void isPalindromeSupplementaryCharactersOutsideBmp() {
+        // Ký tự Unicode ngoài BMP (surrogate pairs): U+10400 (𐐀) và U+10428 (𐐨) thuộc Deseret alphabet
+        assertTrue(TextUtils.isPalindrome("𐐀 a 𐐨"));
+        assertTrue(TextUtils.isPalindrome("𐐀𐐀"));
+        assertFalse(TextUtils.isPalindrome("𐐀 a 𐐁"));
     }
 }
