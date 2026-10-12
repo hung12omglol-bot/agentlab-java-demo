@@ -56,4 +56,15 @@ class TextUtilsTest {
     void capitalizeWordsDoesNotLowercaseRestOfWord() {
         assertEquals("HELLO World", TextUtils.capitalizeWords("HELLO world"));
     }
+
+    @Test
+    void capitalizeWordsBlankIsUnchanged() {
+        assertEquals("   ", TextUtils.capitalizeWords("   "));
+    }
+
+    @Test
+    void capitalizeWordsWordStartingWithDigitOrSymbolIsUnchanged() {
+        assertEquals("123abc", TextUtils.capitalizeWords("123abc"));
+        assertEquals("@domain", TextUtils.capitalizeWords("@domain"));
+    }
 }
