@@ -26,4 +26,39 @@ class TextUtilsTest {
     void blankHasZeroWords() {
         assertEquals(0, TextUtils.wordCount("   "));
     }
+
+    @Test
+    void slugifyNullIsNull() {
+        assertNull(TextUtils.slugify(null));
+    }
+
+    @Test
+    void slugifyEmptyIsEmpty() {
+        assertEquals("", TextUtils.slugify(""));
+    }
+
+    @Test
+    void slugifyOnlySeparatorsIsEmpty() {
+        assertEquals("", TextUtils.slugify("---   ***"));
+    }
+
+    @Test
+    void slugifyRemovesVietnameseDiacriticsAndDStroke() {
+        assertEquals("da-nang", TextUtils.slugify("Đà Nẵng"));
+    }
+
+    @Test
+    void slugifyHandlesPunctuationAndExtraSpaces() {
+        assertEquals("xin-chao-viet-nam", TextUtils.slugify("  Xin chào, Việt Nam!  "));
+    }
+
+    @Test
+    void slugifyCollapsesConsecutiveSeparators() {
+        assertEquals("c-java-17", TextUtils.slugify("C++ & Java 17"));
+    }
+
+    @Test
+    void slugifyLowercasesAsciiText() {
+        assertEquals("hello-world", TextUtils.slugify("Hello   World"));
+    }
 }
