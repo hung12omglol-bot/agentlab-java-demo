@@ -3,6 +3,7 @@ package vn.agentlab.demo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
 class TextUtilsTest {
@@ -45,6 +46,18 @@ class TextUtilsTest {
     @Test
     void slugifyRemovesVietnameseDiacriticsAndDStroke() {
         assertEquals("da-nang", TextUtils.slugify("Đà Nẵng"));
+        assertEquals("dd", TextUtils.slugify("Đđ"));
+    }
+
+    @Test
+    void slugifyIsLocaleIndependent() {
+        Locale previous = Locale.getDefault();
+        try {
+            Locale.setDefault(new Locale("tr", "TR"));
+            assertEquals("i", TextUtils.slugify("I"));
+        } finally {
+            Locale.setDefault(previous);
+        }
     }
 
     @Test

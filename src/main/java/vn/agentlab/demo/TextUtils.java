@@ -1,9 +1,15 @@
 package vn.agentlab.demo;
 
 import java.text.Normalizer;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /** Tiện ích xử lý chuỗi. */
 public final class TextUtils {
+
+    private static final Pattern DIACRITICS = Pattern.compile("\\p{M}");
+    private static final Pattern NON_ALNUM = Pattern.compile("[^a-z0-9]+");
+    private static final Pattern EDGE_DASHES = Pattern.compile("^-+|-+$");
 
     private TextUtils() {
     }
@@ -16,12 +22,13 @@ public final class TextUtils {
         if (s == null) {
             return null;
         }
-        String normalized = Normalizer.normalize(s, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
+        String normalized = DIACRITICS.matcher(Normalizer.normalize(s, Normalizer.Form.NFD))
+                .replaceAll("")
                 .replace('Đ', 'D')
                 .replace('đ', 'd')
-                .toLowerCase();
-        return normalized.replaceAll("[^a-z0-9]+", "-").replaceAll("^-+|-+$", "");
+                .toLowerCase(Locale.ROOT);
+        String withDashes = NON_ALNUM.matcher(normalized).replaceAll("-");
+        return EDGE_DASHES.matcher(withDashes).replaceAll("");
     }
 
     public static String reverse(String s) {
