@@ -1,20 +1,20 @@
 package vn.agentlab.demo;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** Tiện ích xử lý chuỗi. */
 public final class TextUtils {
 
     /**
-     * Khoảng trắng theo chuẩn Unicode. Mặc định "\s" của Java chỉ khớp
-     * [ \t\n\x0B\f\r], bỏ sót NBSP (U+00A0) và các khoảng trắng khác hay đi kèm
-     * văn bản copy từ trang web; cờ UNICODE_CHARACTER_CLASS khắc phục điều đó.
+     * Một "từ" là chuỗi ký tự không phải khoảng trắng. Mặc định "\s"/"\S" của
+     * Java chỉ xét [ \t\n\x0B\f\r], bỏ sót NBSP (U+00A0) và các khoảng trắng
+     * khác hay đi kèm văn bản copy từ trang web; cờ UNICODE_CHARACTER_CLASS
+     * khắc phục điều đó. Đếm trực tiếp các lần khớp "\S+" nên không cần trim
+     * và chỉ duyệt chuỗi một lượt.
      */
-    private static final Pattern WHITESPACE =
-            Pattern.compile("\\s+", Pattern.UNICODE_CHARACTER_CLASS);
-
-    private static final Pattern EDGE_WHITESPACE =
-            Pattern.compile("^\\s+|\\s+$", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern WORD =
+            Pattern.compile("\\S+", Pattern.UNICODE_CHARACTER_CLASS);
 
     private TextUtils() {
     }
@@ -31,10 +31,11 @@ public final class TextUtils {
         if (s == null) {
             return 0;
         }
-        String trimmed = EDGE_WHITESPACE.matcher(s).replaceAll("");
-        if (trimmed.isEmpty()) {
-            return 0;
+        Matcher matcher = WORD.matcher(s);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
         }
-        return WHITESPACE.split(trimmed).length;
+        return count;
     }
 }
